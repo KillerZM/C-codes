@@ -1,5 +1,9 @@
 #include <iostream>
 #include <stdlib.h>
+#include <unistd.h>
+#include <cstdlib>
+
+
 using namespace std;
 
 struct Nodo{
@@ -12,7 +16,7 @@ struct Nodo{
 void menu();
 Nodo *CrearNodo(int, Nodo*);
 void insertarNodo(Nodo *&, int, Nodo*);
-void MostratArbol(Nodo*, int);
+void MostrarArbol(Nodo*, int);
 bool BusquedaArbol(Nodo*, int);
 void preOrden(Nodo*);
 void inOrden(Nodo*);
@@ -28,11 +32,88 @@ void destruirNodo(Nodo *);
 Nodo *arbol=NULL;
 
 int main() {
-    
+    menu();
     return 0;
-};
+}
 
-void menu(){}
+void menu(){
+    int dato, opcion, contador=0;
+    do{
+        cout<< "\n\t .:| Menu |:. "<<endl;
+        cout<< "1. Insertar un nuevo nodo"<<endl;
+        cout<< "2. Mostrar arbol"<<endl;
+        cout<< "3. Buscar un elemento en el arbol"<<endl;
+        cout<< "4. Recorrido en PreOrden"<<endl;
+        cout<< "5. Recorrido en InOrden"<<endl;
+        cout<< "6. Recorrido en PostOrden"<<endl;
+        cout<< "7. Eliminar un nodo"<<endl;
+        cout<< "8. Salir"<<endl;
+        cout<< "\n\t Opcion: ";
+        cin>>opcion;
+
+        switch(opcion){
+            case 1: 
+                cout<< "Digite un numero: ";
+                cin>>dato;
+                insertarNodo(arbol, dato, NULL);
+                cout<< "Nodo insertado correctamente"<<endl;
+                sleep(1);
+                break;
+            case 2:
+                cout<< "\n Mostrando el arbol completo."<<endl;
+                    MostrarArbol(arbol, contador);
+                    sleep(2);
+                break;
+            case 3:
+                cout<< "Digite el elemento a buscar: ";
+                cin>>dato;
+                if(BusquedaArbol(arbol, dato)== true){
+                    cout<< "Elemento "<<dato<< " ha sido encontrado en el arbol"<<endl;
+                }else{
+                    cout<< "Elemento "<<dato<< " no ha sido encontrado en el arbol"<<endl;
+                }
+                break;
+            case 4:
+                cout<< "Recorrido en PreOrden: ";
+                preOrden(arbol);
+                cout<<endl;
+                break;
+            case 5:
+                cout<< "Recorrido en InOrden: ";
+                inOrden(arbol);
+                cout<<endl;
+                break;
+            case 6:
+                cout<< "Recorrido en PostOrden: ";
+                postOrden(arbol);
+                cout<<endl;
+                break;
+            case 7:
+                cout<< "Digite el nodo a eliminar: ";
+                cin>>dato;
+                if(BusquedaArbol(arbol, dato)== true){
+                    Eliminar(arbol, dato);
+                    cout<< "Nodo eliminado correctamente"<<endl;
+                }else{
+                    cout<< "Nodo no encontrado"<<endl;
+                }
+                break;
+            case 8:
+                cout<< "Saliendo del programa";
+                    cout<< ".";
+                    sleep(0.5);
+                    cout<< ".";
+                    sleep(0.5);
+                    cout<< ".";
+                    
+                break;
+        }
+        sleep(3);
+        system("clear");
+    }while(opcion != 8);
+    return ;
+}
+
 // Funcion para crear un nuevo nodo
 Nodo * CrearNodo(int val, Nodo *padre){
     Nodo *nuevo_Nodo=new Nodo();
@@ -50,7 +131,7 @@ void insertarNodo(Nodo *& arbol,int val, Nodo * padre){
         arbol=nuevo_Nodo;
     }else{// si arbol esta ocupado
         int ValorRaiz= arbol->Valor;
-        if(val > ValorRaiz){
+        if(val < ValorRaiz){
             insertarNodo(arbol->Izq, val, arbol);
         }else{
             insertarNodo(arbol->Der, val, arbol);
@@ -148,7 +229,7 @@ void EliminarNodo(Nodo * nodoEliminar){
 // Funcion paa encontrar el valor mas pequeño del arbol
 Nodo *minimo(Nodo * arbol){
     if(arbol==NULL){
-        return;
+        return NULL;
     }else if(arbol->Izq){
         return minimo(arbol->Izq);
     }else{
@@ -158,7 +239,7 @@ Nodo *minimo(Nodo * arbol){
 // Funcion para encontrar el valor mas grande del arbol
 Nodo *maximo(Nodo *arbol){
     if(arbol== NULL){
-        return;
+        return NULL;
     }else if(arbol-> Der){
         return maximo(arbol-> Der);
     }else{
@@ -166,6 +247,7 @@ Nodo *maximo(Nodo *arbol){
     }
 }
 
+// Funcion para remplazar el nodo eliminado
 void remplazar(Nodo * arbol, Nodo * remplazo){
     if(arbol-> Padre){
         // Asignaremos arbol al padre del remplazo
